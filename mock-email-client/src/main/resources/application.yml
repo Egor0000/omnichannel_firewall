@@ -1,0 +1,15 @@
+spring:
+  mail:
+    host: localhost
+    port: 2525
+    username: your-email@example.com
+    password: your-email-password
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+server:
+  port: "${PORT:8010}"
