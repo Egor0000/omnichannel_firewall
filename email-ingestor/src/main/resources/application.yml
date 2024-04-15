@@ -1,0 +1,14 @@
+
+spring:
+  application:
+    name: email-ingestor
+#  datasource:
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://localhost:3306/your-database-name
+#    username: your-username
+#    password: your-password
+  rabbitmq:
+    host: localhost                  # RabbitMQ server host
+    port: 5672                       # RabbitMQ server port
+    username: guest                  # RabbitMQ username
+    password: guest                  # RabbitMQ password
