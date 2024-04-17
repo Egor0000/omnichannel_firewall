@@ -1,0 +1,9 @@
+FROM rabbitmq:3-management-alpine
+
+COPY ./init-rabbitmq.sh /app/
+RUN chmod +x /app/init-rabbitmq.sh
+
+RUN rabbitmq-plugins enable rabbitmq_management
+
+# Define default command
+CMD ["/bin/bash", "-c", "sleep 5 && /app/init-rabbitmq.sh"]

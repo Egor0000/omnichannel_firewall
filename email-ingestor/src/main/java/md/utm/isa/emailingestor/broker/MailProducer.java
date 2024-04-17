@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class MailProducer {
     private static final Logger log = LoggerFactory.getLogger(MailProducer.class);
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
     private UUID consumerId;
-    private Queue<Mail> mailQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<Mail> mailQueue = new ConcurrentLinkedQueue<>();
     private final ObjectMapper objectMapper;
 
     @PostConstruct
@@ -62,10 +62,11 @@ public class MailProducer {
     private void sendMailList(List<Mail> mails) {
         try {
             List<MailWrapper> mailWrappers = mails.stream().map(mail -> new MailWrapper(consumerId, mail)).toList();
-            objectMapper.writeValueAsBytes(mailWrappers);
-            rabbitTemplate.convertAndSend("message.exchange","mail-queue.request." + consumerId, objectMapper.writeValueAsString(mailWrappers));
+            byte [] bytes = objectMapper.writeValueAsBytes(mailWrappers);
+//            String bytes = new ObjectMapper().writeValueAsString(new String("eeeeee"));
+            rabbitTemplate.convertAndSend("message.exchange","mail-queue.request." + consumerId, bytes);
             log.info("Sent {} mails", mailWrappers.size());
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             log.error("Failed to send mails to RabbitMq", e);
         }
     }

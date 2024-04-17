@@ -1,17 +1,9 @@
 #!/bin/bash
 
-sleep 10
+# Set RabbitMQ connection details (adjust if needed)
+HOST=localhost
+PORT=5672
+USERNAME=guest
+PASSWORD=guest
 
-RABBITMQ_USER="guest"
-RABBITMQ_PASS="guest"
-RABBITMQ_HOST="localhost"
-RABBITMQ_PORT="15672"
-
-function create_exchange {
-    local exchange_name="$1"
-    local exchange_type="$2"
-
-    rabbitmqadmin --host=${RABBITMQ_HOST} --port=${RABBITMQ_PORT} --username=${RABBITMQ_USER} --password=${RABBITMQ_PASS} declare exchange name=${exchange_name} type=${exchange_type}
-}
-
-create_exchange "my-topic-exchange" "topic"
+rabbitmqadmin -H rabbitmq -u "$USERNAME" -p "$PASSWORD" declare exchange name="message.exchange" type=topic durable=true auto_delete=false
