@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class FilterObject {
+    private MessageType messageType;
     private String messageId;
     private String from;
     private String to;

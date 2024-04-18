@@ -1,15 +1,16 @@
-package md.utm.isa.ruleengine.mail;
+package md.utm.isa.apiingestor.broker;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import md.utm.isa.apiingestor.api.ApiMessage;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MailWrapper {
+public class ApiWrapper {
     private UUID uuid;
-    private Mail mail;
+    private ApiMessage apiMessage;
 }

@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class FilterResponse {
+    MessageType messageType;
     FilterResponseAction filterResponseAction;
 }

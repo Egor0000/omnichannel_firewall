@@ -1,10 +1,9 @@
-package md.utm.isa.ruleengine.mail;
+package md.utm.isa.ruleengine.channels.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import md.utm.isa.ruleengine.engine.FilterObject;
 import md.utm.isa.ruleengine.engine.FilterResponse;
-import md.utm.isa.ruleengine.engine.FilterResponseAction;
 import md.utm.isa.ruleengine.engine.RuleEngine;
 import org.springframework.stereotype.Service;
 
@@ -15,37 +14,38 @@ import java.util.Map;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MailProcessor {
+public class ApiMessageProcessor {
     private final RuleEngine ruleEngine;
-    private final Map<String, MailWrapper> mails = new HashMap<>();
+    private final Map<String, ApiMessageWrapper> apiMessageWrappers = new HashMap<>();
 
-    public void processMail(List<MailWrapper> mailWrappersList) {
+    public void processApiMessage(List<ApiMessageWrapper> apiMessageWrappersList) {
         // store mail wrapper to send it back later to proper path
-        for (MailWrapper mailWrapper : mailWrappersList) {
+        for (ApiMessageWrapper apiMessageWrapper : apiMessageWrappersList) {
             try {
-                FilterObject filterObject = mailToFilteredObject(mailWrapper);
+                FilterObject filterObject = apiWrapperToFilteredObject(apiMessageWrapper);
                 FilterResponse filterResponse = ruleEngine.filterMessage(filterObject);
                 log.info("Message {} filtered with response {}", filterObject.getMessageId(), filterResponse);
                 // todo should it be sent to mail ingestor to be processed or should be processed here?
                 //  Better to process here and decide what to do with filter response.
             } catch (Exception ex) {
-                mails.remove(mailWrapper.getUuid().toString());
+                apiMessageWrappers.remove(apiMessageWrapper.getUuid().toString());
                 log.error(ex.getMessage(), ex);
             }
 
         }
     }
 
-    private FilterObject mailToFilteredObject(MailWrapper mailWrapper) throws Exception {
+    private FilterObject apiWrapperToFilteredObject(ApiMessageWrapper apiMessageWrapper) throws Exception {
         FilterObject filterObject = new FilterObject();
-        Mail mail = mailWrapper.getMail();
-        if (mail == null) {
-            throw new Exception(String.format("Failed to process mailWrapper from %s. Mail is null", mailWrapper.getUuid().toString()));
+        ApiMessage apiMessage = apiMessageWrapper.getApiMessage();
+        if (apiMessage == null) {
+            throw new Exception(String.format("Failed to process aoiMessageWrapper from %s. Api message is null", apiMessageWrapper.getUuid().toString()));
         }
-        filterObject.setMessageId(mail.getMessageId());
-        filterObject.setTo(mail.getTo());
-        filterObject.setFrom(mail.getFrom());
-        filterObject.setMessageBody(mail.getBody());
+        filterObject.setMessageId(apiMessage.getMessageId());
+        filterObject.setTo(apiMessage.getCustomer());
+        filterObject.setFrom(apiMessage.getFrom());
+        filterObject.setMessageBody(apiMessage.getBody());
         return filterObject;
     }
+
 }

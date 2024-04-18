@@ -1,4 +1,4 @@
-package md.utm.isa.ruleengine.mail;
+package md.utm.isa.ruleengine.channels.mail;
 
 import lombok.Data;
 

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: API Connector
+  security:
+    user:
+      password: "${PASSWORD:set_your_password}"
+
+server:
+  port: "${PORT:8030}"
