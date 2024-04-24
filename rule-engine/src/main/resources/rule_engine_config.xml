@@ -2,26 +2,26 @@
   <rules>
     <rule>
       <name>t1</name>
-      <left>String</left>
-      <right>Left</right>
+      <left>Hello this is messageId 123456ID </left>
+      <right>{{messageId}}</right>
       <operation>CONTAINS</operation>
     </rule>
     <rule>
       <name>t2</name>
-      <left>Regex</left>
-      <right>Left</right>
-      <operation>IN</operation>
+      <left>TEST</left>
+      <right>TEST</right>
+      <operation>EQUAL</operation>
     </rule>
     <rule>
       <name>t3</name>
-      <left>KEk</left>
-      <right>Right</right>
+      <left>7</left>
+      <right>10</right>
       <operation>NOT_GREATER</operation>
     </rule>
   </rules>
   <statements>
     <statement>
-      <name>(t1|t2)&amp;(!(t3)|t2)</name>
+      <value>(t1|t2)&amp;(!(t3)|t2)</value>
       <actions>
         <action>
           <tag>action</tag>

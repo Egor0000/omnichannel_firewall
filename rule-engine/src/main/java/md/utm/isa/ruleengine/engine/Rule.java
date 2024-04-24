@@ -13,4 +13,6 @@ public class Rule {
     private Object left;
     private Object right;
     private Operation operation;
+
+
 }

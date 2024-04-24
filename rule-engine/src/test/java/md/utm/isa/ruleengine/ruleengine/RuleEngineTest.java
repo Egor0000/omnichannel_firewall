@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.tools.FileObject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +20,7 @@ public class RuleEngineTest {
 
 
     @Test
-    void testRuleDefinitionParsing() throws IOException {
+    void testSerializingRuleDefinition() throws IOException {
         RulesDefinition rulesDefinition = new RulesDefinition();
         List<Rule> rules = new ArrayList<>();
         rules.add(new Rule("t1", "String", "Left", Operation.CONTAINS));
@@ -78,7 +79,7 @@ public class RuleEngineTest {
     }
 
     @Test
-    void testParsing() throws IOException {
+    void testParsingRuleDefinitionFile() throws IOException {
         RulesDefinition rulesDefinition = new RulesDefinition();
         List<Rule> rules = new ArrayList<>();
         rules.add(new Rule("t1", "String", "Left", Operation.CONTAINS));
@@ -95,5 +96,12 @@ public class RuleEngineTest {
         Assertions.assertNotNull(actualDefinition);
 
         Assertions.assertEquals(rulesDefinition, actualDefinition);
+    }
+
+    @Test
+    void testRulePatternMatching() {
+        FilterObject filterObject = new FilterObject();
+        filterObject.setMessageId("123456ID");
+        FilterResponse filterResponse =  ruleEngine.filterMessage(filterObject);
     }
 }
