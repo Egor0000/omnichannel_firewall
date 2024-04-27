@@ -45,7 +45,7 @@ public class MailProcessor {
         filterObject.setMessageId(mail.getMessageId());
         filterObject.setTo(mail.getTo());
         filterObject.setFrom(mail.getFrom());
-        filterObject.setMessageBody(mail.getBody());
+        filterObject.setMessageBody(mail.getContent());
         return filterObject;
     }
 }

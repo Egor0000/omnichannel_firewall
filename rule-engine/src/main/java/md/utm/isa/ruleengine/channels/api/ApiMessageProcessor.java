@@ -2,6 +2,7 @@ package md.utm.isa.ruleengine.channels.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import md.utm.isa.ruleengine.broker.ApiResponseProducer;
 import md.utm.isa.ruleengine.engine.FilterObject;
 import md.utm.isa.ruleengine.engine.FilterResponse;
 import md.utm.isa.ruleengine.engine.RuleEngine;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class ApiMessageProcessor {
     private final RuleEngine ruleEngine;
     private final Map<String, ApiMessageWrapper> apiMessageWrappers = new HashMap<>();
+    private final ApiResponseProducer apiResponseProducer;
 
     public void processApiMessage(List<ApiMessageWrapper> apiMessageWrappersList) {
         // store mail wrapper to send it back later to proper path
@@ -25,7 +27,7 @@ public class ApiMessageProcessor {
                 FilterObject filterObject = apiWrapperToFilteredObject(apiMessageWrapper);
                 FilterResponse filterResponse = ruleEngine.filterMessage(filterObject);
                 log.info("Message {} filtered with response {}", filterObject.getMessageId(), filterResponse);
-
+                apiResponseProducer.sendApiResponse(filterResponse);
             } catch (Exception ex) {
                 apiMessageWrappers.remove(apiMessageWrapper.getUuid().toString());
                 log.error(ex.getMessage(), ex);

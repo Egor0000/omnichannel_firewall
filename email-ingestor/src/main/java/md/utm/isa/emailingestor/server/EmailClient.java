@@ -6,10 +6,13 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import md.utm.isa.emailingestor.broker.MailAction;
+import md.utm.isa.emailingestor.broker.Report;
+import md.utm.isa.emailingestor.broker.ReportProducer;
 import md.utm.isa.emailingestor.config.EmailConfig;
 import md.utm.isa.emailingestor.filtering.FilterResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -20,6 +23,7 @@ import java.util.Properties;
 public class EmailClient {
     private final MailStorage mailStorage;
     private final EmailConfig emailConfig;
+    private final ReportProducer reportProducer;
 
     public void processFilterResponses(List<FilterResponse> filterResponseList) {
         for (FilterResponse filterResponse : filterResponseList) {
@@ -42,17 +46,37 @@ public class EmailClient {
 
         switch (action) {
             case "BLOCK":
-                generateReport(mail, mailAction.getCode());
+                generateReport(mail, filterResponse);
                 break;
             case "ALLOW":
             default:
                 sendEmail(mail);
+                generateReport(mail, filterResponse);
                 break;
         }
     }
 
-    private void generateReport(Mail mail, String code) {
-        log.info("Generating report for mail {} with code {}", mail, code);
+    private void generateReport(Mail mail, FilterResponse filterResponse) {
+        Report report = new Report();
+        report.setMessageType("MAIL");
+        report.setMessageId(mail.getMessageId());
+        report.setReceivedTimestamp(mail.getReceivedTimestamp());
+        report.setFrom(mail.getFrom());
+        report.setTo(mail.getTo());
+
+        Map<String, String> reportData = new HashMap<>();
+        reportData.put("bcc", mail.getBcc());
+        reportData.put("cc", mail.getCc());
+        reportData.put("subject", mail.getSubject());
+
+        report.setReportData(reportData);
+        report.setContent(mail.getContent());
+
+        Map<String, String> filterData = new HashMap<>(filterResponse.getActions());
+        filterData.put("matchedStatement", filterResponse.getMatchedStatement());
+        report.setFilterData(filterData);
+
+        reportProducer.sendReport(report);
     }
 
     private void sendEmail(Mail mail) {
@@ -90,7 +114,7 @@ public class EmailClient {
             if (mail.getSubject() != null && !mail.getSubject().isEmpty()) {
                 message.setSubject(mail.getSubject());
             }
-            message.setText(mail.getBody());
+            message.setText(mail.getContent());
 
             // Send the message
             Transport.send(message);

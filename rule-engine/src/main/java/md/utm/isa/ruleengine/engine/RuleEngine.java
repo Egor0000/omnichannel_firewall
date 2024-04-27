@@ -60,7 +60,7 @@ public class RuleEngine {
                 if (parsedResult.equals(Boolean.TRUE)) {
                     Map<String, String> actionsMap = statement.getActions().stream().collect(Collectors.toMap(Action::getTag, Action::getValue));
                     filterResponse.setActions(actionsMap);
-                    filterResponse.setMatchedStatement(statement.toString());
+                    filterResponse.setMatchedStatement(statement.getValue().toString());
                     return filterResponse;
                 }
 
@@ -73,6 +73,9 @@ public class RuleEngine {
 
         //todo for testing: add filters for suspicious email address
         //todo for spam content: Urgent tone,Generic greetings, URLs, websites
+
+        // if any of filters are matched, ALLOW by default
+        filterResponse.getActions().put("action", "ALLOW");
 
         return filterResponse;
     }

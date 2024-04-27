@@ -63,7 +63,6 @@ public class MailProducer {
         try {
             List<MailWrapper> mailWrappers = mails.stream().map(mail -> new MailWrapper(consumerId, mail)).toList();
             byte [] bytes = objectMapper.writeValueAsBytes(mailWrappers);
-//            String bytes = new ObjectMapper().writeValueAsString(new String("eeeeee"));
             rabbitTemplate.convertAndSend("message.exchange","mail-queue.request." + consumerId, bytes);
             log.info("Sent {} mails", mailWrappers.size());
         } catch (Exception e) {

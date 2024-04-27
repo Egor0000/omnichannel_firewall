@@ -27,7 +27,7 @@ public class FilterResponseConsumer {
             exchange = @Exchange(value = "message.exchange", type = ExchangeTypes.TOPIC),
             key = "mail-queue.response.#"
     ))
-    public void onAPiMessageList(byte[] body) {
+    public void onFilterResponse(byte[] body) {
         try {
             List<FilterResponse> list = objectMapper.readValue(body, new TypeReference<List<FilterResponse>>() {});
             emailClient.processFilterResponses(list);

@@ -16,6 +16,7 @@ public class MailClient {
         message.setTo(mail.getTo());
         message.setSubject(mail.getSubject());
         message.setText(mail.getBody());
+        // todo it is sending to all recepients (right flow, but not needed right now )
 //        message.setBcc(mail.getBcc());
 //        message.setCc(mail.getCc());
         mailSender.send(message);

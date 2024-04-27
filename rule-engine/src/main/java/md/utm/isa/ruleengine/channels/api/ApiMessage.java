@@ -7,7 +7,9 @@ import java.util.HashMap;
 @Data
 public class ApiMessage {
     private String messageId;
+    private long receivedTimestamp;
     private HashMap<String, String> headers = new HashMap<>();
+    private String callback;
 
     private String from;
     private String customer;
