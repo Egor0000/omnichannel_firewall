@@ -2,6 +2,7 @@ package md.utm.isa.ruleengine.channels.mail;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import md.utm.isa.ruleengine.broker.MailResponseProducer;
 import md.utm.isa.ruleengine.engine.FilterObject;
 import md.utm.isa.ruleengine.engine.FilterResponse;
 import md.utm.isa.ruleengine.engine.RuleEngine;
@@ -16,6 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MailProcessor {
     private final RuleEngine ruleEngine;
+    private final MailResponseProducer mailResponseProducer;
     private final Map<String, MailWrapper> mails = new HashMap<>();
 
     public void processMail(List<MailWrapper> mailWrappersList) {
@@ -24,9 +26,8 @@ public class MailProcessor {
             try {
                 FilterObject filterObject = mailToFilteredObject(mailWrapper);
                 FilterResponse filterResponse = ruleEngine.filterMessage(filterObject);
+                mailResponseProducer.sendMailResponse(filterResponse);
                 log.info("Message {} filtered with response {}", filterObject.getMessageId(), filterResponse);
-                // todo should it be sent to mail ingestor to be processed or should be processed here?
-                //  Better to process here and decide what to do with filter response.
             } catch (Exception ex) {
                 mails.remove(mailWrapper.getUuid().toString());
                 log.error(ex.getMessage(), ex);

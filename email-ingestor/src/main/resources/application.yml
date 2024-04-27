@@ -11,4 +11,8 @@ spring:
     host: localhost                  # RabbitMQ server host
     port: 5672                       # RabbitMQ server port
     username: guest                  # RabbitMQ username
-    password: guest                  # RabbitMQ password
+    password: guest
+    # RabbitMQ password
+email:
+  password: ${EMAIL_PASSWORD:password}
+  username: ${EMAIL_USER:username}

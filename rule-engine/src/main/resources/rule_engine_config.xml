@@ -2,26 +2,14 @@
   <rules>
     <rule>
       <name>t1</name>
-      <left>Hello this is messageId 123456ID </left>
-      <right>{{messageId}}</right>
+      <left>{{from}}</left>
+      <right>@test.com</right>
       <operation>CONTAINS</operation>
-    </rule>
-    <rule>
-      <name>t2</name>
-      <left>TEST</left>
-      <right>TEST</right>
-      <operation>EQUAL</operation>
-    </rule>
-    <rule>
-      <name>t3</name>
-      <left>7</left>
-      <right>10</right>
-      <operation>NOT_GREATER</operation>
     </rule>
   </rules>
   <statements>
     <statement>
-      <value>(t1|t2)&amp;(!(t3)|t2)</value>
+      <value>t1</value>
       <actions>
         <action>
           <tag>action</tag>

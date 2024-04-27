@@ -11,14 +11,13 @@ public class MailClient {
     private final MailSender mailSender;
 
     public void sendMail(Mail mail) {
-        sendMail(mail.getTo(), mail.getSubject(), mail.getBody());
-    }
-
-    private void sendMail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
+        message.setFrom(mail.getFrom());
+        message.setTo(mail.getTo());
+        message.setSubject(mail.getSubject());
+        message.setText(mail.getBody());
+//        message.setBcc(mail.getBcc());
+//        message.setCc(mail.getCc());
         mailSender.send(message);
     }
 }

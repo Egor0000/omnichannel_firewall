@@ -6,13 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import md.utm.isa.emailingestor.broker.MailProducer;
 import org.springframework.stereotype.Service;
-import org.subethamail.smtp.TooMuchDataException;
+import org.subethamail.smtp.*;
 import org.subethamail.smtp.helper.SimpleMessageListener;
 import org.subethamail.smtp.helper.SimpleMessageListenerAdapter;
+import org.subethamail.smtp.io.DeferredFileOutputStream;
 import org.subethamail.smtp.server.SMTPServer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 @Service

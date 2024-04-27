@@ -25,8 +25,7 @@ public class ApiMessageProcessor {
                 FilterObject filterObject = apiWrapperToFilteredObject(apiMessageWrapper);
                 FilterResponse filterResponse = ruleEngine.filterMessage(filterObject);
                 log.info("Message {} filtered with response {}", filterObject.getMessageId(), filterResponse);
-                // todo should it be sent to mail ingestor to be processed or should be processed here?
-                //  Better to process here and decide what to do with filter response.
+
             } catch (Exception ex) {
                 apiMessageWrappers.remove(apiMessageWrapper.getUuid().toString());
                 log.error(ex.getMessage(), ex);

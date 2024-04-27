@@ -103,5 +103,6 @@ public class RuleEngineTest {
         FilterObject filterObject = new FilterObject();
         filterObject.setMessageId("123456ID");
         FilterResponse filterResponse =  ruleEngine.filterMessage(filterObject);
+        Assertions.assertNotNull(filterResponse);
     }
 }

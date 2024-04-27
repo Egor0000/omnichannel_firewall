@@ -1,4 +1,4 @@
-package md.utm.isa.ruleengine.engine;
+package md.utm.isa.emailingestor.filtering;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import java.util.Map;
 @Data
 public class FilterResponse {
     String messageId;
-    MessageType messageType;
+    String messageType;
     Map<String, String> actions = new HashMap<>();
     String matchedStatement;
     String matchesRegex;

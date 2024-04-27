@@ -41,8 +41,7 @@ public class RuleEngine {
 
     public FilterResponse filterMessage(FilterObject filterObject) {
         FilterResponse filterResponse = new FilterResponse();
-        filterResponse.setFilterResponseAction(FilterResponseAction.ALLOW);
-
+        filterResponse.setMessageId(filterObject.getMessageId());
         for (Statement statement: rulesDefinition.getStatements()) {
             Expression<String> evalExpression = statement.getExpression();
             HashMap<String, Boolean> matches = new HashMap<>();
@@ -57,12 +56,23 @@ public class RuleEngine {
                 // could use resolved.getExprType() == "literal" to check if it is a true/false result
                 Boolean parsedResult = Boolean.parseBoolean(resolved.toString());
                 log.info("Resolved rule {}", parsedResult);
+
+                if (parsedResult.equals(Boolean.TRUE)) {
+                    Map<String, String> actionsMap = statement.getActions().stream().collect(Collectors.toMap(Action::getTag, Action::getValue));
+                    filterResponse.setActions(actionsMap);
+                    filterResponse.setMatchedStatement(statement.toString());
+                    return filterResponse;
+                }
+
             } catch (Exception ex) {
                 log.error("Could get parsedResult {}. Most probably the expression is not assigned with all required boolean values", resolved);
             }
         }
 
         //todo add custom fields to filter request and think about external measurements like size, word count (may be add some function capabilities)
+
+        //todo for testing: add filters for suspicious email address
+        //todo for spam content: Urgent tone,Generic greetings, URLs, websites
 
         return filterResponse;
     }
