@@ -28,20 +28,22 @@ public class ApiCsvWriter {
         csvPrinter = new CSVPrinter(stringWriter, csvFormat);
     }
 
-    public void writeToCsv(Report mail) {
+    public void writeToCsv(Report apiMessage) {
         List<String> strings = new ArrayList<>();
-        strings.add(mail.getMessageType());
-        strings.add(mail.getMessageId());
-        strings.add(new Date(mail.getReceivedTimestamp()).toString());
-        strings.add(mail.getFrom());
-        strings.add(mail.getTo());
-        strings.add(getFieldData(mail.getReportData().get("subject"), ""));
-        strings.add(mail.getContent().replace("\r\n", "\\n"));
+        strings.add(apiMessage.getMessageType());
+        strings.add(apiMessage.getMessageId());
+        strings.add(new Date(apiMessage.getReceivedTimestamp()).toString());
+        strings.add(apiMessage.getFrom());
+        strings.add(apiMessage.getTo());
+        strings.add(getFieldData(apiMessage.getReportData().get("sessionId"), ""));
+        strings.add(getFieldData(apiMessage.getReportData().get("agentId"), ""));
+
+        strings.add(apiMessage.getContent().replace("\r\n", "\\n"));
 
         // add filter result
-        strings.add(getFieldData(mail.getFilterData().get("action"), ""));
-        strings.add(getFieldData(mail.getFilterData().get("code"), "0"));
-        strings.add(getFieldData(mail.getFilterData().get("matchedStatement"), ""));
+        strings.add(getFieldData(apiMessage.getFilterData().get("action"), ""));
+        strings.add(getFieldData(apiMessage.getFilterData().get("code"), "0"));
+        strings.add(getFieldData(apiMessage.getFilterData().get("matchedStatement"), ""));
 
         synchronized (lock) {
             try  {

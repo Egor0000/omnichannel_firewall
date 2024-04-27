@@ -11,12 +11,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReportService {
     private final MailCsvWriter mailCsvWriter;
+    private final ApiCsvWriter apiCsvWriter;
+
     public void processReportList(List<Report> reportList) {
         for (Report report : reportList) {
             log.info("Processing report {}", report);
             switch (report.getMessageType()) {
                 case "MAIL":
                     mailCsvWriter.writeToCsv(report);
+                    break;
+                case "API":
+                    apiCsvWriter.writeToCsv(report);
                     break;
             }
         }

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOGS" value="./logs" />
+
+    <appender name="Console"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/report-service.log</file>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily and when the file reaches 10 MegaBytes -->
+            <fileNamePattern>${LOGS}/archived/report-service-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="MAIL-CSV" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/reports/mails/mail-report.csv</file>
+
+<!--        todo add custom patterLayout to match dynamic headers(if needed)-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <fileHeader>messageType,messageId,receivedDate,from,to,subject,content,action,code,matchedStatement</fileHeader>
+            <pattern>%m%n</pattern>
+        </layout>
+
+        <!-- Rollover daily and when the file reaches {maxFileSize} and delete logs older than {maxHistory} day(s)-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/reports/mails/mail-report-%d{yyyyMMddHHmm}.csv</fileNamePattern>
+            <maxHistory>2</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="API-CSV" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/reports/api-messages/api-report.csv</file>
+
+        <!--        todo add custom patterLayout to match dynamic headers(if needed)-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <fileHeader>messageType,messageId,receivedDate,from,to,sessionId,agentId,content,action,code,matchedStatement</fileHeader>
+            <pattern>%m%n</pattern>
+        </layout>
+
+        <!-- Rollover daily and when the file reaches {maxFileSize} and delete logs older than {maxHistory} day(s)-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/reports/api-messages/api-report-%d{yyyyMMddHHmm}.csv</fileNamePattern>
+            <maxHistory>2</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="md.utm.isa.reportservice.report.MailCsvWriter" level="INFO" additivity="false">
+        <appender-ref ref="MAIL-CSV" />
+    </logger>
+
+    <logger name="md.utm.isa.reportservice.report.ApiCsvWriter" level="INFO" additivity="false">
+        <appender-ref ref="API-CSV" />
+    </logger>
+
+    <!-- LOG everything at INFO level -->
+    <root level="info">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+    </root>
+</configuration>
