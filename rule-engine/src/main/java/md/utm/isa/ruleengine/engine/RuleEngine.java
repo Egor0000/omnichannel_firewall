@@ -13,6 +13,7 @@ import md.utm.isa.ruleengine.config.XmlAnnotationIntrospector;
 import md.utm.isa.ruleengine.exceptions.RuleEvaluationException;
 import md.utm.isa.ruleengine.exceptions.StatementParsingException;
 import md.utm.isa.ruleengine.util.FileUtil;
+import org.ahocorasick.trie.Emit;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -27,8 +28,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RuleEngine {
     private final XmlMapper xmlMapper = new XmlMapper();
-    private ObjectWriter objectWriter;
     private final RuleEngineProperties ruleEngineProperties;
+    private final PatternRepo patternRepo;
+    private ObjectWriter objectWriter;
     private RulesDefinition rulesDefinition;
     private Map<String, Pattern> regexPattern = new HashMap<>();
 
@@ -97,6 +99,13 @@ public class RuleEngine {
 
         switch (operation) {
             case IN -> {
+                if (right.equals("{{pattern_list}}")) {
+                    String leftString = left.toString();
+                    Double spamCoef = computeContentSpam(leftString);
+                    // todo. this value is rough one. There should be done a lot of experiments to find the optimal
+                    //  coefficient and formula to get this coefficient
+                    return spamCoef > 0.4;
+                }
                 return isMatch(String.format(".*%s.*", left.toString()), right.toString());
             }
             case CONTAINS -> {
@@ -159,6 +168,11 @@ public class RuleEngine {
 
     private Object processRuleParts(Object part, FilterObject filterObject) {
 
+        // todo temporary solution. This should act as a function - a separate operation
+        if (part.equals("{{pattern_list}}")) {
+            return part;
+        }
+
         String regex = "\\{\\{([a-zA-Z_$][a-zA-Z\\d_$]*)}}";
         if (part instanceof String stringPart && isMatch(regex, stringPart)) {
             Object value =  filterObject.getValueByFieldName(stringPart.replaceAll("^\\{\\{(.*)}}$", "$1"));
@@ -199,6 +213,20 @@ public class RuleEngine {
         Pattern compiledPattern = regexPattern.computeIfAbsent(pattern, Pattern::compile);
         Matcher matcher = compiledPattern.matcher(text);
         return matcher.matches();
+    }
+
+    private Double computeContentSpam(String text) {
+        Collection<Emit> emits = patternRepo.matchText(text);
+        // todo may be the formula for weighted calculation should be revised;
+        Double sum = 0.0;
+        for (Emit emit: emits) {
+            Double coef = patternRepo.getCoefficient(emit.getKeyword());
+            sum += coef;
+            log.info("Matched emited: {} with coef", emit.getKeyword());
+        }
+
+        log.info("Final spam coef = {}", sum);
+        return sum;
     }
 
 }

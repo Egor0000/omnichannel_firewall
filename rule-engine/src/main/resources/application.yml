@@ -12,4 +12,5 @@ server:
 
 engine:
   config_file: "${CONFIG_DIR:src/main/resources/rule_engine_config.xml}"
+  pattern-file: "${PATTERN_DIR:/app/report_service/patterns/patterns.json}"
 

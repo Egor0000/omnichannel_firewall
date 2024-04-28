@@ -8,4 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class RuleEngineProperties {
     private String configFile;
+    private String patternFile;
 }

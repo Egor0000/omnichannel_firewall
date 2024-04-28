@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOGS" value="./logs" />
+    <property name="LOGS" value="/app/report_service/logs" />
+    <property name="REPORTS" value="/app/report_service/reports" />
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
@@ -34,7 +35,7 @@
     </appender>
 
     <appender name="MAIL-CSV" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/reports/mails/mail-report.csv</file>
+        <file>${REPORTS}/mails/mail-report.csv</file>
 
 <!--        todo add custom patterLayout to match dynamic headers(if needed)-->
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -50,7 +51,7 @@
     </appender>
 
     <appender name="API-CSV" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/reports/api-messages/api-report.csv</file>
+        <file>${REPORTS}/api-messages/api-report.csv</file>
 
         <!--        todo add custom patterLayout to match dynamic headers(if needed)-->
         <layout class="ch.qos.logback.classic.PatternLayout">

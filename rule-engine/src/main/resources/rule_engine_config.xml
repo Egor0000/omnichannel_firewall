@@ -2,9 +2,9 @@
   <rules>
     <rule>
       <name>t1</name>
-      <left>{{from}}</left>
-      <right>@test.com</right>
-      <operation>CONTAINS</operation>
+      <left>{{messageBody}}</left>
+      <right>{{pattern_list}}</right>
+      <operation>IN</operation>
     </rule>
   </rules>
   <statements>
